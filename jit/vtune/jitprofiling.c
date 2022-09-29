@@ -58,11 +58,10 @@
 
 #include "ittnotify_config.h"
 
-#if ITT_PLATFORM == ITT_PLATFORM_WIN
+#if ITT_PLATFORM==ITT_PLATFORM_WIN
 #include <windows.h>
 #pragma optimize("", off)
 #endif /* ITT_PLATFORM==ITT_PLATFORM_WIN */
-
 #include <stdlib.h>
 
 #include "jitprofiling.h"
@@ -72,22 +71,22 @@ static const char rcsid[] = "\n@(#) $Revision: 463960 $\n";
 #define DLL_ENVIRONMENT_VAR             "VS_PROFILER"
 
 #ifndef NEW_DLL_ENVIRONMENT_VAR
-#if ITT_ARCH == ITT_ARCH_IA32
+#if ITT_ARCH==ITT_ARCH_IA32
 #define NEW_DLL_ENVIRONMENT_VAR	        "INTEL_JIT_PROFILER32"
 #else
-#define NEW_DLL_ENVIRONMENT_VAR            "INTEL_JIT_PROFILER64"
+#define NEW_DLL_ENVIRONMENT_VAR	        "INTEL_JIT_PROFILER64"
 #endif
 #endif /* NEW_DLL_ENVIRONMENT_VAR */
 
-#if ITT_PLATFORM == ITT_PLATFORM_WIN
+#if ITT_PLATFORM==ITT_PLATFORM_WIN
 #define DEFAULT_DLLNAME                 "JitPI.dll"
 HINSTANCE m_libHandle = NULL;
-#elif ITT_PLATFORM == ITT_PLATFORM_MAC
+#elif ITT_PLATFORM==ITT_PLATFORM_MAC
 #define DEFAULT_DLLNAME                 "libJitPI.dylib"
 void* m_libHandle = NULL;
 #else
 #define DEFAULT_DLLNAME                 "libJitPI.so"
-void *m_libHandle = NULL;
+void* m_libHandle = NULL;
 #endif /* ITT_PLATFORM==ITT_PLATFORM_WIN */
 
 /* default location of JIT profiling agent on Android */
@@ -95,12 +94,10 @@ void *m_libHandle = NULL;
 
 /* the function pointers */
 typedef unsigned int(JITAPI *TPInitialize)(void);
+static TPInitialize FUNC_Initialize=NULL;
 
-static TPInitialize FUNC_Initialize = NULL;
-
-typedef unsigned int(JITAPI *TPNotify)(unsigned int, void *);
-
-static TPNotify FUNC_NotifyEvent = NULL;
+typedef unsigned int(JITAPI *TPNotify)(unsigned int, void*);
+static TPNotify FUNC_NotifyEvent=NULL;
 
 static iJIT_IsProfilingActiveFlags executionMode = iJIT_NOTHING_RUNNING;
 
@@ -118,11 +115,13 @@ static int loadiJIT_Funcs(void);
 static int iJIT_DLL_is_missing = 0;
 
 ITT_EXTERN_C int JITAPI
-iJIT_NotifyEvent(iJIT_JVM_EVENT event_type, void *EventSpecificData) {
+iJIT_NotifyEvent(iJIT_JVM_EVENT event_type, void *EventSpecificData)
+{
     int ReturnValue;
 
     /* initialization part - the collector has not been loaded yet. */
-    if (!FUNC_NotifyEvent) {
+    if (!FUNC_NotifyEvent)
+    {
         if (iJIT_DLL_is_missing)
             return 0;
 
@@ -131,28 +130,37 @@ iJIT_NotifyEvent(iJIT_JVM_EVENT event_type, void *EventSpecificData) {
     }
 
     if (event_type == iJVM_EVENT_TYPE_METHOD_LOAD_FINISHED ||
-        event_type == iJVM_EVENT_TYPE_METHOD_UPDATE) {
-        if (((piJIT_Method_Load) EventSpecificData)->method_id == 0)
+        event_type == iJVM_EVENT_TYPE_METHOD_UPDATE)
+    {
+        if (((piJIT_Method_Load)EventSpecificData)->method_id == 0)
             return 0;
-    } else if (event_type == iJVM_EVENT_TYPE_METHOD_LOAD_FINISHED_V2) {
-        if (((piJIT_Method_Load_V2) EventSpecificData)->method_id == 0)
+    }
+    else if (event_type == iJVM_EVENT_TYPE_METHOD_LOAD_FINISHED_V2)
+    {
+        if (((piJIT_Method_Load_V2)EventSpecificData)->method_id == 0)
             return 0;
-    } else if (event_type == iJVM_EVENT_TYPE_METHOD_LOAD_FINISHED_V3) {
-        if (((piJIT_Method_Load_V3) EventSpecificData)->method_id == 0)
+    }
+    else if (event_type == iJVM_EVENT_TYPE_METHOD_LOAD_FINISHED_V3)
+    {
+        if (((piJIT_Method_Load_V3)EventSpecificData)->method_id == 0)
             return 0;
-    } else if (event_type == iJVM_EVENT_TYPE_METHOD_INLINE_LOAD_FINISHED) {
-        if (((piJIT_Method_Inline_Load) EventSpecificData)->method_id == 0 ||
-            ((piJIT_Method_Inline_Load) EventSpecificData)->parent_method_id == 0)
+    }
+    else if (event_type == iJVM_EVENT_TYPE_METHOD_INLINE_LOAD_FINISHED)
+    {
+        if (((piJIT_Method_Inline_Load)EventSpecificData)->method_id == 0 ||
+            ((piJIT_Method_Inline_Load)EventSpecificData)->parent_method_id == 0)
             return 0;
     }
 
-    ReturnValue = (int) FUNC_NotifyEvent(event_type, EventSpecificData);
+    ReturnValue = (int)FUNC_NotifyEvent(event_type, EventSpecificData);
 
     return ReturnValue;
 }
 
-ITT_EXTERN_C iJIT_IsProfilingActiveFlags JITAPI iJIT_IsProfilingActive() {
-    if (!iJIT_DLL_is_missing) {
+ITT_EXTERN_C iJIT_IsProfilingActiveFlags JITAPI iJIT_IsProfilingActive()
+{
+    if (!iJIT_DLL_is_missing)
+    {
         loadiJIT_Funcs();
     }
 
@@ -163,14 +171,16 @@ ITT_EXTERN_C iJIT_IsProfilingActiveFlags JITAPI iJIT_IsProfilingActive() {
  * on success: all functions load,     iJIT_DLL_is_missing = 0, return value = 1
  * on failure: all functions are NULL, iJIT_DLL_is_missing = 1, return value = 0
  */
-static int loadiJIT_Funcs() {
+static int loadiJIT_Funcs()
+{
     static int bDllWasLoaded = 0;
-    char *dllName = (char *) rcsid; /* !! Just to avoid unused code elimination */
-#if ITT_PLATFORM == ITT_PLATFORM_WIN
+    char *dllName = (char*)rcsid; /* !! Just to avoid unused code elimination */
+#if ITT_PLATFORM==ITT_PLATFORM_WIN
     DWORD dNameLength = 0;
 #endif /* ITT_PLATFORM==ITT_PLATFORM_WIN */
 
-    if (bDllWasLoaded) {
+    if(bDllWasLoaded)
+    {
         /* dll was already loaded, no need to do it for the second time */
         return 1;
     }
@@ -179,8 +189,9 @@ static int loadiJIT_Funcs() {
     iJIT_DLL_is_missing = 1;
     FUNC_NotifyEvent = NULL;
 
-    if (m_libHandle) {
-#if ITT_PLATFORM == ITT_PLATFORM_WIN
+    if (m_libHandle)
+    {
+#if ITT_PLATFORM==ITT_PLATFORM_WIN
         FreeLibrary(m_libHandle);
 #else  /* ITT_PLATFORM==ITT_PLATFORM_WIN */
         dlclose(m_libHandle);
@@ -189,7 +200,7 @@ static int loadiJIT_Funcs() {
     }
 
     /* Try to get the dll name from the environment */
-#if ITT_PLATFORM == ITT_PLATFORM_WIN
+#if ITT_PLATFORM==ITT_PLATFORM_WIN
     dNameLength = GetEnvironmentVariableA(NEW_DLL_ENVIRONMENT_VAR, NULL, 0);
     if (dNameLength)
     {
@@ -235,14 +246,16 @@ static int loadiJIT_Funcs() {
     if (!dllName)
         dllName = ANDROID_JIT_AGENT_PATH;
 #endif
-    if (dllName) {
+    if (dllName)
+    {
         /* Try to load the dll from the PATH... */
         m_libHandle = dlopen(dllName, RTLD_LAZY);
     }
 #endif /* ITT_PLATFORM==ITT_PLATFORM_WIN */
 
-    if (!m_libHandle) {
-#if ITT_PLATFORM == ITT_PLATFORM_WIN
+    if (!m_libHandle)
+    {
+#if ITT_PLATFORM==ITT_PLATFORM_WIN
         m_libHandle = LoadLibraryA(DEFAULT_DLLNAME);
 #else  /* ITT_PLATFORM==ITT_PLATFORM_WIN */
         m_libHandle = dlopen(DEFAULT_DLLNAME, RTLD_LAZY);
@@ -250,34 +263,37 @@ static int loadiJIT_Funcs() {
     }
 
     /* if the dll wasn't loaded - exit. */
-    if (!m_libHandle) {
+    if (!m_libHandle)
+    {
         iJIT_DLL_is_missing = 1; /* don't try to initialize
                                   * JIT agent the second time
                                   */
         return 0;
     }
 
-#if ITT_PLATFORM == ITT_PLATFORM_WIN
+#if ITT_PLATFORM==ITT_PLATFORM_WIN
     FUNC_NotifyEvent = (TPNotify)GetProcAddress(m_libHandle, "NotifyEvent");
 #else  /* ITT_PLATFORM==ITT_PLATFORM_WIN */
-    FUNC_NotifyEvent = (TPNotify) dlsym(m_libHandle, "NotifyEvent");
+    FUNC_NotifyEvent = (TPNotify)dlsym(m_libHandle, "NotifyEvent");
 #endif /* ITT_PLATFORM==ITT_PLATFORM_WIN */
-    if (!FUNC_NotifyEvent) {
+    if (!FUNC_NotifyEvent) 
+    {
         FUNC_Initialize = NULL;
         return 0;
     }
 
-#if ITT_PLATFORM == ITT_PLATFORM_WIN
+#if ITT_PLATFORM==ITT_PLATFORM_WIN
     FUNC_Initialize = (TPInitialize)GetProcAddress(m_libHandle, "Initialize");
 #else  /* ITT_PLATFORM==ITT_PLATFORM_WIN */
-    FUNC_Initialize = (TPInitialize) dlsym(m_libHandle, "Initialize");
+    FUNC_Initialize = (TPInitialize)dlsym(m_libHandle, "Initialize");
 #endif /* ITT_PLATFORM==ITT_PLATFORM_WIN */
-    if (!FUNC_Initialize) {
+    if (!FUNC_Initialize) 
+    {
         FUNC_NotifyEvent = NULL;
         return 0;
     }
 
-    executionMode = (iJIT_IsProfilingActiveFlags) FUNC_Initialize();
+    executionMode = (iJIT_IsProfilingActiveFlags)FUNC_Initialize();
 
     bDllWasLoaded = 1;
     iJIT_DLL_is_missing = 0; /* DLL is ok. */
@@ -285,7 +301,8 @@ static int loadiJIT_Funcs() {
     return 1;
 }
 
-ITT_EXTERN_C unsigned int JITAPI iJIT_GetNewMethodID() {
+ITT_EXTERN_C unsigned int JITAPI iJIT_GetNewMethodID()
+{
     static unsigned int methodID = 1;
 
     if (methodID == 0)

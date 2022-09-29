@@ -72,31 +72,31 @@
 enum ud_operand_code {
     OP_NONE,
 
-    OP_A, OP_E, OP_M, OP_G,
-    OP_I, OP_F,
+    OP_A,      OP_E,      OP_M,       OP_G,       
+    OP_I,      OP_F,
 
-    OP_R0, OP_R1, OP_R2, OP_R3,
-    OP_R4, OP_R5, OP_R6, OP_R7,
+    OP_R0,     OP_R1,     OP_R2,      OP_R3,
+    OP_R4,     OP_R5,     OP_R6,      OP_R7,
 
-    OP_AL, OP_CL, OP_DL,
-    OP_AX, OP_CX, OP_DX,
-    OP_eAX, OP_eCX, OP_eDX,
-    OP_rAX, OP_rCX, OP_rDX,
+    OP_AL,     OP_CL,     OP_DL,
+    OP_AX,     OP_CX,     OP_DX,
+    OP_eAX,    OP_eCX,    OP_eDX,
+    OP_rAX,    OP_rCX,    OP_rDX,
 
-    OP_ES, OP_CS, OP_SS, OP_DS,
-    OP_FS, OP_GS,
+    OP_ES,     OP_CS,     OP_SS,      OP_DS,  
+    OP_FS,     OP_GS,
 
-    OP_ST0, OP_ST1, OP_ST2, OP_ST3,
-    OP_ST4, OP_ST5, OP_ST6, OP_ST7,
+    OP_ST0,    OP_ST1,    OP_ST2,     OP_ST3,
+    OP_ST4,    OP_ST5,    OP_ST6,     OP_ST7,
 
-    OP_J, OP_S, OP_O,
-    OP_I1, OP_I3, OP_sI,
+    OP_J,      OP_S,      OP_O,          
+    OP_I1,     OP_I3,     OP_sI,
 
-    OP_V, OP_W, OP_Q, OP_P,
-    OP_U, OP_N, OP_MU, OP_H,
+    OP_V,      OP_W,      OP_Q,       OP_P, 
+    OP_U,      OP_N,      OP_MU,      OP_H,
     OP_L,
 
-    OP_R, OP_C, OP_D,
+    OP_R,      OP_C,      OP_D,       
 
     OP_MR
 } UD_ATTR_PACKED;
@@ -145,34 +145,38 @@ typedef uint16_t ud_operand_size_t;
 /* resolve complex size type.
  */
 static UD_INLINE ud_operand_size_t
-Mx_mem_size(ud_operand_size_t size) {
-    return (size >> 8) & 0xff;
+Mx_mem_size(ud_operand_size_t size)
+{
+  return (size >> 8) & 0xff;
 }
 
 static UD_INLINE ud_operand_size_t
-Mx_reg_size(ud_operand_size_t size) {
-    return size & 0xff;
+Mx_reg_size(ud_operand_size_t size)
+{
+  return size & 0xff;
 }
 
 /* A single operand of an entry in the instruction table. 
  * (internal use only)
  */
-struct ud_itab_entry_operand {
-    enum ud_operand_code type;
-    ud_operand_size_t size;
+struct ud_itab_entry_operand 
+{
+  enum ud_operand_code type;
+  ud_operand_size_t size;
 };
 
 
 /* A single entry in an instruction table. 
  *(internal use only)
  */
-struct ud_itab_entry {
-    enum ud_mnemonic_code mnemonic;
-    struct ud_itab_entry_operand operand1;
-    struct ud_itab_entry_operand operand2;
-    struct ud_itab_entry_operand operand3;
-    struct ud_itab_entry_operand operand4;
-    uint32_t prefix;
+struct ud_itab_entry 
+{
+  enum ud_mnemonic_code         mnemonic;
+  struct ud_itab_entry_operand  operand1;
+  struct ud_itab_entry_operand  operand2;
+  struct ud_itab_entry_operand  operand3;
+  struct ud_itab_entry_operand  operand4;
+  uint32_t                      prefix;
 };
 
 struct ud_lookup_table_list_entry {
@@ -180,7 +184,7 @@ struct ud_lookup_table_list_entry {
     enum ud_table_type type;
     const char *meta;
 };
-
+     
 extern struct ud_itab_entry ud_itab[];
 extern struct ud_lookup_table_list_entry ud_lookup_table_list[];
 
