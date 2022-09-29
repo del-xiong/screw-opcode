@@ -10,19 +10,19 @@
 #include <stddef.h>
 #include <stdarg.h>
 
-#define DASM_IDENT    "DynASM 1.4.0"
-#define DASM_VERSION    10400    /* 1.4.0 */
+#define DASM_IDENT	"DynASM 1.4.0"
+#define DASM_VERSION	10400	/* 1.4.0 */
 
 #ifndef Dst_DECL
-#define Dst_DECL    dasm_State **Dst
+#define Dst_DECL	dasm_State **Dst
 #endif
 
 #ifndef Dst_REF
-#define Dst_REF        (*Dst)
+#define Dst_REF		(*Dst)
 #endif
 
 #ifndef DASM_FDEF
-#define DASM_FDEF    extern
+#define DASM_FDEF	extern
 #endif
 
 #ifndef DASM_M_GROW
@@ -40,7 +40,7 @@
 #endif
 
 #ifndef DASM_M_FREE
-#define DASM_M_FREE(ctx, p, sz)    free(p)
+#define DASM_M_FREE(ctx, p, sz)	free(p)
 #endif
 
 /* Internal DynASM encoder state. */
@@ -49,7 +49,6 @@ typedef struct dasm_State dasm_State;
 
 /* Initialize and free DynASM state. */
 DASM_FDEF void dasm_init(Dst_DECL, int maxsection);
-
 DASM_FDEF void dasm_free(Dst_DECL);
 
 /* Setup global array. Must be called before dasm_setup(). */
@@ -77,7 +76,7 @@ DASM_FDEF int dasm_getpclabel(Dst_DECL, unsigned int pc);
 /* Optional sanity checker to call between isolated encoding steps. */
 DASM_FDEF int dasm_checkstep(Dst_DECL, int secmatch);
 #else
-#define dasm_checkstep(a, b)    0
+#define dasm_checkstep(a, b)	0
 #endif
 
 

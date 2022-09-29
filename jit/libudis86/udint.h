@@ -40,14 +40,14 @@
 #endif /* !HAVE_ASSERT_H */
 
 #if defined(UD_DEBUG)
-#define UDERR(u, msg) \
+  #define UDERR(u, msg) \
     do { \
       (u)->error = 1; \
       fprintf(stderr, "decode-error: %s:%d: %s", \
               __FILE__, __LINE__, (msg)); \
     } while (0)
 #else
-#define UDERR(u, m) \
+  #define UDERR(u, m) \
     do { \
       (u)->error = 1; \
     } while (0)
@@ -83,7 +83,7 @@
 #  define FMT64 "ll"
 # elif defined(__amd64__) || defined(__x86_64__)
 #  define FMT64 "l"
-# else
+# else 
 #  define FMT64 "ll"
 # endif /* !x64 */
 #endif
@@ -91,7 +91,7 @@
 /* define an inline macro */
 #if defined(_MSC_VER) || defined(__BORLANDC__)
 # define UD_INLINE __inline /* MS Visual Studio requires __inline
-instead of inline for C code */
+                               instead of inline for C code */
 #else
 # define UD_INLINE inline
 #endif

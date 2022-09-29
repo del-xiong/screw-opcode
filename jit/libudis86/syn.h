@@ -27,31 +27,24 @@
 #define UD_SYN_H
 
 #include "types.h"
-
 #ifndef __UD_STANDALONE__
-
 # include <stdarg.h>
-
 #endif /* __UD_STANDALONE__ */
 
-extern const char *ud_reg_tab[];
+extern const char* ud_reg_tab[];
 
-uint64_t ud_syn_rel_target(struct ud *, struct ud_operand *);
+uint64_t ud_syn_rel_target(struct ud*, struct ud_operand*);
 
 #ifdef __GNUC__
 int ud_asmprintf(struct ud *u, const char *fmt, ...)
     __attribute__ ((format (printf, 2, 3)));
 #else
-
 int ud_asmprintf(struct ud *u, const char *fmt, ...);
-
 #endif
 
 void ud_syn_print_addr(struct ud *u, uint64_t addr);
-
-void ud_syn_print_imm(struct ud *u, const struct ud_operand *op);
-
-void ud_syn_print_mem_disp(struct ud *u, const struct ud_operand *, int sign);
+void ud_syn_print_imm(struct ud* u, const struct ud_operand *op);
+void ud_syn_print_mem_disp(struct ud* u, const struct ud_operand *, int sign);
 
 #endif /* UD_SYN_H */
 

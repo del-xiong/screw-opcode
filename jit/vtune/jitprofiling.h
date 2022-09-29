@@ -222,7 +222,8 @@
 /**
  * @brief Enumerator for the types of notifications
  */
-typedef enum iJIT_jvm_event {
+typedef enum iJIT_jvm_event
+{
     iJVM_EVENT_TYPE_SHUTDOWN = 2,               /**<\brief Send this to shutdown the agent.
                                                  * Use NULL for event data. */
 
@@ -279,11 +280,12 @@ typedef enum iJIT_jvm_event {
 /**
  * @brief Enumerator for the agent's mode
  */
-typedef enum _iJIT_IsProfilingActiveFlags {
-    iJIT_NOTHING_RUNNING = 0x0000,    /**<\brief The agent is not running;
+typedef enum _iJIT_IsProfilingActiveFlags
+{
+    iJIT_NOTHING_RUNNING           = 0x0000,    /**<\brief The agent is not running;
                                                  * iJIT_NotifyEvent calls will
                                                  * not be processed. */
-    iJIT_SAMPLING_ON = 0x0001,    /**<\brief The agent is running and
+    iJIT_SAMPLING_ON               = 0x0001,    /**<\brief The agent is running and
                                                  * ready to process notifications. */
 } iJIT_IsProfilingActiveFlags;
 
@@ -312,7 +314,8 @@ typedef enum _iJIT_IsProfilingActiveFlags {
  *      18-21           30
  * @endcode
  */
-typedef struct _LineNumberInfo {
+typedef struct _LineNumberInfo
+{
     unsigned int Offset;     /**<\brief Offset from the begining of the code region. */
     unsigned int LineNumber; /**<\brief Matching source line number offset (from beginning of source file). */
 
@@ -321,7 +324,8 @@ typedef struct _LineNumberInfo {
 /**
  * @brief Enumerator for the code architecture.
  */
-typedef enum _iJIT_CodeArchitecture {
+typedef enum _iJIT_CodeArchitecture
+{
     iJIT_CA_NATIVE = 0, /**<\brief Native to the process architecture that is calling it. */
 
     iJIT_CA_32,         /**<\brief 32-bit machine code. */
@@ -338,7 +342,8 @@ typedef enum _iJIT_CodeArchitecture {
  *  the JIT compiled method, use iJVM_EVENT_TYPE_METHOD_LOAD_FINISHED
  *  as an event type to report it.
  */
-typedef struct _iJIT_Method_Load {
+typedef struct _iJIT_Method_Load
+{
     unsigned int method_id; /**<\brief Unique method ID. Cannot be 0.
                              *  You must either use the API function
                              *  iJIT_GetNewMethodID to get a valid and unique
@@ -348,11 +353,11 @@ typedef struct _iJIT_Method_Load {
                              *  regions of the same method, otherwise different
                              *  method IDs specify different methods. */
 
-    char *method_name; /**<\brief The name of the method. It can be optionally
+    char* method_name; /**<\brief The name of the method. It can be optionally
                         *  prefixed with its class name and appended with
                         *  its complete signature. Can't be NULL. */
 
-    void *method_load_address; /**<\brief The start virtual address of the method code
+    void* method_load_address; /**<\brief The start virtual address of the method code
                                 *  region. If NULL, data provided with
                                 *  event are not accepted. */
 
@@ -372,9 +377,9 @@ typedef struct _iJIT_Method_Load {
 
     unsigned int class_id; /**<\brief This field is obsolete. */
 
-    char *class_file_name; /**<\brief Class name. Can be NULL.*/
+    char* class_file_name; /**<\brief Class name. Can be NULL.*/
 
-    char *source_file_name; /**<\brief Source file name. Can be NULL.*/
+    char* source_file_name; /**<\brief Source file name. Can be NULL.*/
 
 } *piJIT_Method_Load, iJIT_Method_Load;
 
@@ -384,7 +389,8 @@ typedef struct _iJIT_Method_Load {
  *  the JIT compiled method, use iJVM_EVENT_TYPE_METHOD_LOAD_FINISHED_V2
  *  as an event type to report it.
  */
-typedef struct _iJIT_Method_Load_V2 {
+typedef struct _iJIT_Method_Load_V2
+{
     unsigned int method_id; /**<\brief Unique method ID. Cannot be 0.
                              *  You must either use the API function
                              *  iJIT_GetNewMethodID to get a valid and unique
@@ -394,11 +400,11 @@ typedef struct _iJIT_Method_Load_V2 {
                              *  regions of the same method, otherwise different
                              *  method IDs specify different methods. */
 
-    char *method_name; /**<\brief The name of the method. It can be optionally
+    char* method_name; /**<\brief The name of the method. It can be optionally
                         *  prefixed with its class name and appended with
                         *  its complete signature. Can't be  NULL. */
 
-    void *method_load_address; /**<\brief The start virtual address of the method code
+    void* method_load_address; /**<\brief The start virtual address of the method code
                                 *  region. If NULL, then data provided with the
                                 *  event are not accepted. */
 
@@ -416,11 +422,11 @@ typedef struct _iJIT_Method_Load_V2 {
                                         *  description of a single entry in
                                         *  the line number info array. */
 
-    char *class_file_name; /**<\brief Class name. Can be NULL. */
+    char* class_file_name; /**<\brief Class name. Can be NULL. */
 
-    char *source_file_name; /**<\brief Source file name. Can be NULL. */
+    char* source_file_name; /**<\brief Source file name. Can be NULL. */
 
-    char *module_name; /**<\brief Module name. Can be NULL.
+    char* module_name; /**<\brief Module name. Can be NULL.
                            The module name can be useful for distinguishing among
                            different JIT engines. VTune Amplifier will display
                            reported methods grouped by specific module. */
@@ -435,7 +441,8 @@ typedef struct _iJIT_Method_Load_V2 {
  *  the JIT compiled method, use iJVM_EVENT_TYPE_METHOD_LOAD_FINISHED_V3
  *  as an event type to report it.
  */
-typedef struct _iJIT_Method_Load_V3 {
+typedef struct _iJIT_Method_Load_V3
+{
     unsigned int method_id; /**<\brief Unique method ID. Cannot be 0.
                              *  You must either use the API function
                              *  iJIT_GetNewMethodID to get a valid and unique
@@ -445,11 +452,11 @@ typedef struct _iJIT_Method_Load_V3 {
                              *  regions of the same method, otherwise they are
                              *  treated as regions of different methods. */
 
-    char *method_name; /**<\brief The name of the method. It can be optionally
+    char* method_name; /**<\brief The name of the method. It can be optionally
                         *  prefixed with its class name and appended with
                         *  its complete signature. Cannot be  NULL. */
 
-    void *method_load_address; /**<\brief The start virtual address of the method code
+    void* method_load_address; /**<\brief The start virtual address of the method code
                                 *  region. If NULL, then data provided with the
                                 *  event are not accepted. */
 
@@ -467,11 +474,11 @@ typedef struct _iJIT_Method_Load_V3 {
                                         *  description of a single entry in
                                         *  the line number info array. */
 
-    char *class_file_name; /**<\brief Class name. Can be NULL. */
+    char* class_file_name; /**<\brief Class name. Can be NULL. */
 
-    char *source_file_name; /**<\brief Source file name. Can be NULL. */
+    char* source_file_name; /**<\brief Source file name. Can be NULL. */
 
-    char *module_name; /**<\brief Module name. Can be NULL.
+    char* module_name; /**<\brief Module name. Can be NULL.
                         *  The module name can be useful for distinguishing among
                         *  different JIT engines. VTune Amplifier will display
                         *  reported methods grouped by specific module. */
@@ -497,7 +504,8 @@ typedef struct _iJIT_Method_Load_V3 {
  *  the JIT compiled method, use iJVM_EVENT_TYPE_METHOD_INLINE_LOAD_FINISHED
  *  as an event type to report it.
  */
-typedef struct _iJIT_Method_Inline_Load {
+typedef struct _iJIT_Method_Inline_Load
+{
     unsigned int method_id; /**<\brief Unique method ID. Cannot be 0.
                              *  You must either use the API function
                              *  iJIT_GetNewMethodID to get a valid and unique
@@ -511,11 +519,11 @@ typedef struct _iJIT_Method_Inline_Load {
                                     *  method ID, or else manage ID uniqueness
                                     *  and correct range by yourself. */
 
-    char *method_name; /**<\brief The name of the method. It can be optionally
+    char* method_name; /**<\brief The name of the method. It can be optionally
                         *  prefixed with its class name and appended with
                         *  its complete signature. Can't be NULL. */
 
-    void *method_load_address;  /** <\brief The virtual address on which the method
+    void* method_load_address;  /** <\brief The virtual address on which the method
                                  *  is inlined. If NULL, then data provided with
                                  *  the event are not accepted. */
 
@@ -533,9 +541,9 @@ typedef struct _iJIT_Method_Inline_Load {
                                         *  description of a single entry in
                                         *  the line number info array */
 
-    char *class_file_name; /**<\brief Class name. Can be NULL.*/
+    char* class_file_name; /**<\brief Class name. Can be NULL.*/
 
-    char *source_file_name; /**<\brief Source file name. Can be NULL.*/
+    char* source_file_name; /**<\brief Source file name. Can be NULL.*/
 
 } *piJIT_Method_Inline_Load, iJIT_Method_Inline_Load;
 
@@ -546,7 +554,8 @@ typedef struct _iJIT_Method_Inline_Load {
  * with the iJVM_EVENT_TYPE_METHOD_UPDATE_V2 event to be applied to
  * a certain code trace.
  */
-typedef enum _iJIT_SegmentType {
+typedef enum _iJIT_SegmentType
+{
     iJIT_CT_UNKNOWN = 0,
 
     iJIT_CT_CODE,           /**<\brief Executable code. */
@@ -601,14 +610,15 @@ typedef enum _iJIT_SegmentType {
  * @endcode
  */
 
-typedef struct _iJIT_Method_Update {
-    void *load_address;         /**<\brief Start address of the update within a method */
+typedef struct _iJIT_Method_Update
+{
+    void* load_address;         /**<\brief Start address of the update within a method */
 
     unsigned int size;          /**<\brief The update size */
 
     iJIT_SegmentType type;      /**<\brief Type of the update */
 
-    const char *data_format;    /**<\brief C string that contains a format string
+    const char* data_format;    /**<\brief C string that contains a format string
                                  * that follows the same specifications as format in printf.
                                  * The format string is used for iJIT_CT_CODE only
                                  * and cannot be NULL.

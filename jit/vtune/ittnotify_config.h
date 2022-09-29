@@ -104,11 +104,11 @@
 #endif /* ITT_PLATFORM_FREEBSD */
 
 #ifndef ITT_PLATFORM
-#  if ITT_OS == ITT_OS_WIN
+#  if ITT_OS==ITT_OS_WIN
 #    define ITT_PLATFORM ITT_PLATFORM_WIN
-#  elif ITT_OS == ITT_OS_MAC
+#  elif ITT_OS==ITT_OS_MAC
 #    define ITT_PLATFORM ITT_PLATFORM_MAC
-#  elif ITT_OS == ITT_OS_FREEBSD
+#  elif ITT_OS==ITT_OS_FREEBSD
 #    define ITT_PLATFORM ITT_PLATFORM_FREEBSD
 #  else
 #    define ITT_PLATFORM ITT_PLATFORM_POSIX
@@ -120,20 +120,17 @@
 #endif
 
 #include <stddef.h>
-
-#if ITT_PLATFORM == ITT_PLATFORM_WIN
+#if ITT_PLATFORM==ITT_PLATFORM_WIN
 #include <tchar.h>
 #else  /* ITT_PLATFORM==ITT_PLATFORM_WIN */
-
 #include <stdint.h>
-
 #if defined(UNICODE) || defined(_UNICODE)
 #include <wchar.h>
 #endif /* UNICODE || _UNICODE */
 #endif /* ITT_PLATFORM==ITT_PLATFORM_WIN */
 
 #ifndef ITTAPI_CDECL
-#  if ITT_PLATFORM == ITT_PLATFORM_WIN
+#  if ITT_PLATFORM==ITT_PLATFORM_WIN
 #    define ITTAPI_CDECL __cdecl
 #  else /* ITT_PLATFORM==ITT_PLATFORM_WIN */
 #    if defined _M_IX86 || defined __i386__
@@ -145,7 +142,7 @@
 #endif /* ITTAPI_CDECL */
 
 #ifndef STDCALL
-#  if ITT_PLATFORM == ITT_PLATFORM_WIN
+#  if ITT_PLATFORM==ITT_PLATFORM_WIN
 #    define STDCALL __stdcall
 #  else /* ITT_PLATFORM==ITT_PLATFORM_WIN */
 #    if defined _M_IX86 || defined __i386__
@@ -163,7 +160,7 @@
 #define ITTAPI_CALL    ITTAPI_CDECL
 #define LIBITTAPI_CALL ITTAPI_CDECL
 
-#if ITT_PLATFORM == ITT_PLATFORM_WIN
+#if ITT_PLATFORM==ITT_PLATFORM_WIN
 /* use __forceinline (VC++ specific) */
 #define ITT_INLINE           __forceinline
 #define ITT_INLINE_ATTRIBUTE /* nothing */
@@ -246,7 +243,7 @@
                                 " (" ITT_TO_STR(API_VERSION_BUILD) ")"
 
 /* OS communication functions */
-#if ITT_PLATFORM == ITT_PLATFORM_WIN
+#if ITT_PLATFORM==ITT_PLATFORM_WIN
 #include <windows.h>
 typedef HMODULE           lib_t;
 typedef DWORD             TIDT;
@@ -254,9 +251,7 @@ typedef CRITICAL_SECTION  mutex_t;
 #define MUTEX_INITIALIZER { 0 }
 #define strong_alias(name, aliasname) /* empty for Windows */
 #else  /* ITT_PLATFORM==ITT_PLATFORM_WIN */
-
 #include <dlfcn.h>
-
 #if defined(UNICODE) || defined(_UNICODE)
 #include <wchar.h>
 #endif /* UNICODE */
@@ -266,19 +261,17 @@ typedef CRITICAL_SECTION  mutex_t;
 #ifndef __USE_UNIX98
 #define __USE_UNIX98 1 /* need for PTHREAD_MUTEX_RECURSIVE, on SLES11.1 with gcc 4.3.4 wherein pthread.h missing dependency on __USE_XOPEN2K8 */
 #endif /*__USE_UNIX98*/
-
 #include <pthread.h>
-
-typedef void *lib_t;
-typedef pthread_t TIDT;
-typedef pthread_mutex_t mutex_t;
+typedef void*             lib_t;
+typedef pthread_t         TIDT;
+typedef pthread_mutex_t   mutex_t;
 #define MUTEX_INITIALIZER PTHREAD_MUTEX_INITIALIZER
 #define _strong_alias(name, aliasname) \
             extern __typeof (name) aliasname __attribute__ ((alias (#name)));
 #define strong_alias(name, aliasname) _strong_alias(name, aliasname)
 #endif /* ITT_PLATFORM==ITT_PLATFORM_WIN */
 
-#if ITT_PLATFORM == ITT_PLATFORM_WIN
+#if ITT_PLATFORM==ITT_PLATFORM_WIN
 #define __itt_get_proc(lib, name) GetProcAddress(lib, name)
 #define __itt_mutex_init(mutex)   InitializeCriticalSection(mutex)
 #define __itt_mutex_lock(mutex)   EnterCriticalSection(mutex)
@@ -344,13 +337,13 @@ ITT_INLINE long __itt_interlocked_increment(volatile long* ptr)
 #define __itt_fstrdup(s)          strdup(s)
 #define __itt_thread_id()         pthread_self()
 #define __itt_thread_yield()      sched_yield()
-#if ITT_ARCH == ITT_ARCH_IA64
+#if ITT_ARCH==ITT_ARCH_IA64
 #ifdef __INTEL_COMPILER
 #define __TBB_machine_fetchadd4(addr, val) __fetchadd4_acq((void *)addr, val)
 #else  /* __INTEL_COMPILER */
 /* TODO: Add Support for not Intel compilers for IA-64 architecture */
 #endif /* __INTEL_COMPILER */
-#elif ITT_ARCH == ITT_ARCH_IA32 || ITT_ARCH == ITT_ARCH_IA32E /* ITT_ARCH!=ITT_ARCH_IA64 */
+#elif ITT_ARCH==ITT_ARCH_IA32 || ITT_ARCH==ITT_ARCH_IA32E /* ITT_ARCH!=ITT_ARCH_IA64 */
 ITT_INLINE long
 __TBB_machine_fetchadd4(volatile void* ptr, long addend) ITT_INLINE_ATTRIBUTE;
 ITT_INLINE long __TBB_machine_fetchadd4(volatile void* ptr, long addend)
@@ -366,14 +359,12 @@ ITT_INLINE long __TBB_machine_fetchadd4(volatile void* ptr, long addend)
 #define __TBB_machine_fetchadd4(addr, val) __sync_fetch_and_add(addr, val)
 #endif /* ITT_ARCH==ITT_ARCH_IA64 */
 #ifndef ITT_SIMPLE_INIT
-
 ITT_INLINE long
-__itt_interlocked_increment(volatile long *ptr) ITT_INLINE_ATTRIBUTE;
-
-ITT_INLINE long __itt_interlocked_increment(volatile long *ptr) {
+__itt_interlocked_increment(volatile long* ptr) ITT_INLINE_ATTRIBUTE;
+ITT_INLINE long __itt_interlocked_increment(volatile long* ptr)
+{
     return __TBB_machine_fetchadd4(ptr, 1) + 1L;
 }
-
 #endif /* ITT_SIMPLE_INIT */
 #endif /* ITT_PLATFORM==ITT_PLATFORM_WIN */
 
@@ -383,91 +374,96 @@ typedef enum {
 } __itt_collection_state;
 
 typedef enum {
-    __itt_thread_normal = 0,
+    __itt_thread_normal  = 0,
     __itt_thread_ignored = 1
 } __itt_thread_state;
 
 #pragma pack(push, 8)
 
-typedef struct ___itt_thread_info {
-    const char *nameA; /*!< Copy of original name in ASCII. */
+typedef struct ___itt_thread_info
+{
+    const char* nameA; /*!< Copy of original name in ASCII. */
 #if defined(UNICODE) || defined(_UNICODE)
     const wchar_t* nameW; /*!< Copy of original name in UNICODE. */
 #else  /* UNICODE || _UNICODE */
-    void *nameW;
+    void* nameW;
 #endif /* UNICODE || _UNICODE */
-    TIDT tid;
+    TIDT               tid;
     __itt_thread_state state;   /*!< Thread state (paused or normal) */
-    int extra1;  /*!< Reserved to the runtime */
-    void *extra2;  /*!< Reserved to the runtime */
-    struct ___itt_thread_info *next;
+    int                extra1;  /*!< Reserved to the runtime */
+    void*              extra2;  /*!< Reserved to the runtime */
+    struct ___itt_thread_info* next;
 } __itt_thread_info;
 
 #include "ittnotify_types.h" /* For __itt_group_id definition */
 
-typedef struct ___itt_api_info_20101001 {
-    const char *name;
-    void **func_ptr;
-    void *init_func;
+typedef struct ___itt_api_info_20101001
+{
+    const char*    name;
+    void**         func_ptr;
+    void*          init_func;
     __itt_group_id group;
-} __itt_api_info_20101001;
+}  __itt_api_info_20101001;
 
-typedef struct ___itt_api_info {
-    const char *name;
-    void **func_ptr;
-    void *init_func;
-    void *null_func;
+typedef struct ___itt_api_info
+{
+    const char*    name;
+    void**         func_ptr;
+    void*          init_func;
+    void*          null_func;
     __itt_group_id group;
-} __itt_api_info;
+}  __itt_api_info;
 
-typedef struct __itt_counter_info {
-    const char *nameA;  /*!< Copy of original name in ASCII. */
+typedef struct __itt_counter_info
+{
+    const char* nameA;  /*!< Copy of original name in ASCII. */
 #if defined(UNICODE) || defined(_UNICODE)
     const wchar_t* nameW; /*!< Copy of original name in UNICODE. */
 #else  /* UNICODE || _UNICODE */
-    void *nameW;
+    void* nameW;
 #endif /* UNICODE || _UNICODE */
-    const char *domainA;  /*!< Copy of original name in ASCII. */
+    const char* domainA;  /*!< Copy of original name in ASCII. */
 #if defined(UNICODE) || defined(_UNICODE)
     const wchar_t* domainW; /*!< Copy of original name in UNICODE. */
 #else  /* UNICODE || _UNICODE */
-    void *domainW;
+    void* domainW;
 #endif /* UNICODE || _UNICODE */
     int type;
     long index;
-    int extra1; /*!< Reserved to the runtime */
-    void *extra2; /*!< Reserved to the runtime */
-    struct __itt_counter_info *next;
-} __itt_counter_info_t;
+    int   extra1; /*!< Reserved to the runtime */
+    void* extra2; /*!< Reserved to the runtime */
+    struct __itt_counter_info* next;
+}  __itt_counter_info_t;
 
 struct ___itt_domain;
 struct ___itt_string_handle;
 
-typedef struct ___itt_global {
-    unsigned char magic[8];
-    unsigned long version_major;
-    unsigned long version_minor;
-    unsigned long version_build;
-    volatile long api_initialized;
-    volatile long mutex_initialized;
-    volatile long atomic_counter;
-    mutex_t mutex;
-    lib_t lib;
-    void *error_handler;
-    const char **dll_path_ptr;
-    __itt_api_info *api_list_ptr;
-    struct ___itt_global *next;
+typedef struct ___itt_global
+{
+    unsigned char          magic[8];
+    unsigned long          version_major;
+    unsigned long          version_minor;
+    unsigned long          version_build;
+    volatile long          api_initialized;
+    volatile long          mutex_initialized;
+    volatile long          atomic_counter;
+    mutex_t                mutex;
+    lib_t                  lib;
+    void*                  error_handler;
+    const char**           dll_path_ptr;
+    __itt_api_info*        api_list_ptr;
+    struct ___itt_global*  next;
     /* Joinable structures below */
-    __itt_thread_info *thread_list;
-    struct ___itt_domain *domain_list;
-    struct ___itt_string_handle *string_list;
+    __itt_thread_info*     thread_list;
+    struct ___itt_domain*  domain_list;
+    struct ___itt_string_handle* string_list;
     __itt_collection_state state;
-    __itt_counter_info_t *counter_list;
+    __itt_counter_info_t* counter_list;
 } __itt_global;
 
 #pragma pack(pop)
 
-#define NEW_THREAD_INFO_W(gptr, h, h_tail, t, s, n) { \
+#define NEW_THREAD_INFO_W(gptr,h,h_tail,t,s,n) { \
     h = (__itt_thread_info*)malloc(sizeof(__itt_thread_info)); \
     if (h != NULL) { \
         h->tid    = t; \
@@ -484,7 +480,7 @@ typedef struct ___itt_global {
     } \
 }
 
-#define NEW_THREAD_INFO_A(gptr, h, h_tail, t, s, n) { \
+#define NEW_THREAD_INFO_A(gptr,h,h_tail,t,s,n) { \
     h = (__itt_thread_info*)malloc(sizeof(__itt_thread_info)); \
     if (h != NULL) { \
         h->tid    = t; \
@@ -501,7 +497,7 @@ typedef struct ___itt_global {
     } \
 }
 
-#define NEW_DOMAIN_W(gptr, h, h_tail, name) { \
+#define NEW_DOMAIN_W(gptr,h,h_tail,name) { \
     h = (__itt_domain*)malloc(sizeof(__itt_domain)); \
     if (h != NULL) { \
         h->flags  = 1;    /* domain is enabled by default */ \
@@ -517,7 +513,7 @@ typedef struct ___itt_global {
     } \
 }
 
-#define NEW_DOMAIN_A(gptr, h, h_tail, name) { \
+#define NEW_DOMAIN_A(gptr,h,h_tail,name) { \
     h = (__itt_domain*)malloc(sizeof(__itt_domain)); \
     if (h != NULL) { \
         h->flags  = 1;    /* domain is enabled by default */ \
@@ -533,7 +529,7 @@ typedef struct ___itt_global {
     } \
 }
 
-#define NEW_STRING_HANDLE_W(gptr, h, h_tail, name) { \
+#define NEW_STRING_HANDLE_W(gptr,h,h_tail,name) { \
     h = (__itt_string_handle*)malloc(sizeof(__itt_string_handle)); \
     if (h != NULL) { \
         h->strA   = NULL; \
@@ -548,7 +544,7 @@ typedef struct ___itt_global {
     } \
 }
 
-#define NEW_STRING_HANDLE_A(gptr, h, h_tail, name) { \
+#define NEW_STRING_HANDLE_A(gptr,h,h_tail,name) { \
     h = (__itt_string_handle*)malloc(sizeof(__itt_string_handle)); \
     if (h != NULL) { \
         h->strA   = name ? __itt_fstrdup(name) : NULL; \
@@ -563,7 +559,7 @@ typedef struct ___itt_global {
     } \
 }
 
-#define NEW_COUNTER_W(gptr, h, h_tail, name, domain, type) { \
+#define NEW_COUNTER_W(gptr,h,h_tail,name,domain,type) { \
     h = (__itt_counter_info_t*)malloc(sizeof(__itt_counter_info_t)); \
     if (h != NULL) { \
         h->nameA   = NULL; \
@@ -580,7 +576,7 @@ typedef struct ___itt_global {
     } \
 }
 
-#define NEW_COUNTER_A(gptr, h, h_tail, name, domain, type) { \
+#define NEW_COUNTER_A(gptr,h,h_tail,name,domain,type) { \
     h = (__itt_counter_info_t*)malloc(sizeof(__itt_counter_info_t)); \
     if (h != NULL) { \
         h->nameA   = name ? __itt_fstrdup(name) : NULL; \

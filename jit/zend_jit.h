@@ -70,44 +70,44 @@ typedef struct _zend_jit_trace_stack_frame zend_jit_trace_stack_frame;
 typedef struct _sym_node zend_sym_node;
 
 typedef struct _zend_jit_globals {
-    zend_bool enabled;
-    zend_bool on;
-    uint8_t trigger;
-    uint8_t opt_level;
-    uint32_t opt_flags;
+	zend_bool enabled;
+	zend_bool on;
+	uint8_t   trigger;
+	uint8_t   opt_level;
+	uint32_t  opt_flags;
 
-    const char *options;
-    zend_long buffer_size;
-    zend_long debug;
-    zend_long bisect_limit;
-    double prof_threshold;
-    zend_long max_root_traces;       /* max number of root traces */
-    zend_long max_side_traces;       /* max number of side traces (per root trace) */
-    zend_long max_exit_counters;     /* max total number of side exits for all traces */
-    zend_long hot_loop;
-    zend_long hot_func;
-    zend_long hot_return;
-    zend_long hot_side_exit;         /* number of exits before taking side trace */
-    zend_long blacklist_root_trace;  /* number of attempts to JIT a root trace before blacklist it */
-    zend_long blacklist_side_trace;  /* number of attempts to JIT a side trace before blacklist it */
-    zend_long max_loop_unrolls;      /* max number of unrolled loops */
-    zend_long max_recursive_calls;   /* max number of recursive inlined call unrolls */
-    zend_long max_recursive_returns; /* max number of recursive inlined return unrolls */
-    zend_long max_polymorphic_calls; /* max number of inlined polymorphic calls */
+	const char *options;
+	zend_long   buffer_size;
+	zend_long   debug;
+	zend_long   bisect_limit;
+	double      prof_threshold;
+	zend_long   max_root_traces;       /* max number of root traces */
+	zend_long   max_side_traces;       /* max number of side traces (per root trace) */
+	zend_long   max_exit_counters;     /* max total number of side exits for all traces */
+	zend_long   hot_loop;
+	zend_long   hot_func;
+	zend_long   hot_return;
+	zend_long   hot_side_exit;         /* number of exits before taking side trace */
+	zend_long   blacklist_root_trace;  /* number of attempts to JIT a root trace before blacklist it */
+	zend_long   blacklist_side_trace;  /* number of attempts to JIT a side trace before blacklist it */
+	zend_long   max_loop_unrolls;      /* max number of unrolled loops */
+	zend_long   max_recursive_calls;   /* max number of recursive inlined call unrolls */
+	zend_long   max_recursive_returns; /* max number of recursive inlined return unrolls */
+	zend_long   max_polymorphic_calls; /* max number of inlined polymorphic calls */
 
-    zend_sym_node *symbols;            /* symbols for disassembler */
+	zend_sym_node *symbols;            /* symbols for disassembler */
 
-    zend_bool tracing;
+	zend_bool tracing;
 
-    zend_jit_trace_rec *current_trace;
-    zend_jit_trace_stack_frame *current_frame;
+	zend_jit_trace_rec *current_trace;
+	zend_jit_trace_stack_frame *current_frame;
 
-    const zend_op *bad_root_cache_opline[ZEND_JIT_TRACE_BAD_ROOT_SLOTS];
-    uint8_t bad_root_cache_count[ZEND_JIT_TRACE_BAD_ROOT_SLOTS];
-    uint8_t bad_root_cache_stop[ZEND_JIT_TRACE_BAD_ROOT_SLOTS];
-    uint32_t bad_root_slot;
+	const zend_op *bad_root_cache_opline[ZEND_JIT_TRACE_BAD_ROOT_SLOTS];
+	uint8_t bad_root_cache_count[ZEND_JIT_TRACE_BAD_ROOT_SLOTS];
+	uint8_t bad_root_cache_stop[ZEND_JIT_TRACE_BAD_ROOT_SLOTS];
+	uint32_t bad_root_slot;
 
-    uint8_t *exit_counters;
+	uint8_t  *exit_counters;
 } zend_jit_globals;
 
 #ifdef ZTS
@@ -118,39 +118,27 @@ extern int jit_globals_id;
 extern zend_jit_globals jit_globals;
 #endif
 
-ZEND_EXT_API int zend_jit_op_array(zend_op_array *op_array, zend_script *script);
-
-ZEND_EXT_API int zend_jit_script(zend_script *script);
-
+ZEND_EXT_API int  zend_jit_op_array(zend_op_array *op_array, zend_script *script);
+ZEND_EXT_API int  zend_jit_script(zend_script *script);
 ZEND_EXT_API void zend_jit_unprotect(void);
-
 ZEND_EXT_API void zend_jit_protect(void);
-
 ZEND_EXT_API void zend_jit_init(void);
-
-ZEND_EXT_API int zend_jit_config(zend_string *jit_options, int stage);
-
-ZEND_EXT_API int zend_jit_debug_config(zend_long old_val, zend_long new_val, int stage);
-
-ZEND_EXT_API int zend_jit_startup(void *jit_buffer, size_t size, zend_bool reattached);
-
+ZEND_EXT_API int  zend_jit_config(zend_string *jit_options, int stage);
+ZEND_EXT_API int  zend_jit_debug_config(zend_long old_val, zend_long new_val, int stage);
+ZEND_EXT_API int  zend_jit_startup(void *jit_buffer, size_t size, zend_bool reattached);
 ZEND_EXT_API void zend_jit_shutdown(void);
-
 ZEND_EXT_API void zend_jit_activate(void);
-
 ZEND_EXT_API void zend_jit_deactivate(void);
-
 ZEND_EXT_API void zend_jit_status(zval *ret);
-
 ZEND_EXT_API void zend_jit_restart(void);
 
 typedef struct _zend_lifetime_interval zend_lifetime_interval;
 typedef struct _zend_life_range zend_life_range;
 
 struct _zend_life_range {
-    uint32_t start;
-    uint32_t end;
-    zend_life_range *next;
+	uint32_t         start;
+	uint32_t         end;
+	zend_life_range *next;
 };
 
 #define ZREG_FLAGS_SHIFT    8
@@ -161,23 +149,20 @@ struct _zend_life_range {
 #define ZREG_SPLIT          (1<<3)
 
 struct _zend_lifetime_interval {
-    int ssa_var;
-    union {
-        struct {
-            ZEND_ENDIAN_LOHI_3(
-                    int8_t
-            reg,
-            uint8_t flags,
-                    uint16_t
-            reserved
-            )
-        };
-        uint32_t reg_flags;
-    };
-    zend_life_range range;
-    zend_lifetime_interval *hint;
-    zend_lifetime_interval *used_as_hint;
-    zend_lifetime_interval *list_next;
+	int                     ssa_var;
+	union {
+		struct {
+		ZEND_ENDIAN_LOHI_3(
+			int8_t          reg,
+			uint8_t         flags,
+			uint16_t        reserved
+		)};
+		uint32_t            reg_flags;
+	};
+	zend_life_range         range;
+	zend_lifetime_interval *hint;
+	zend_lifetime_interval *used_as_hint;
+	zend_lifetime_interval *list_next;
 };
 
 #endif /* HAVE_JIT_H */

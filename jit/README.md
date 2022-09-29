@@ -16,7 +16,7 @@ DynAsm
 ------
 
 This uses [DynAsm](https://luajit.org/dynasm.html) (developed for LuaJIT project)
-for the generation of native code. It's a very lightweight and advanced tool,
+for the generation of native code.  It's a very lightweight and advanced tool,
 but does assume good, and very low-level development knowledge of target
 assembler languages. In the past we tried LLVM, but its code generation speed
 was almost 100 times slower, making it prohibitively expensive to use.
